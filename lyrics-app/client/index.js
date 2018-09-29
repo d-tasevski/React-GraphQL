@@ -7,7 +7,6 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
 
-import App from './components/App';
 import SongList from './components/SongList';
 import SongCreate from './components/SongCreate';
 import SongDetail from './components/SongDetail';
@@ -23,20 +22,18 @@ const client = new ApolloClient({
 	dataIdFromObject: o => o.id,
 });
 
-const Root = () => {
-	return (
-		<ApolloProvider client={client}>
-			<BrowserRouter>
+const Root = () => (
+	<ApolloProvider client={client}>
+		<BrowserRouter>
+			<div className="container">
 				<Switch>
-					<App>
-						<Route path="/songs/new" component={SongCreate} />
-						<Route path="/songs/:id" component={SongDetail} />
-						<Route component={SongList} />
-					</App>
+					<Route exact path="/" component={SongList} />
+					<Route exact path="/songs/new" component={SongCreate} />
+					<Route path="/songs/:id" component={SongDetail} />
 				</Switch>
-			</BrowserRouter>
-		</ApolloProvider>
-	);
-};
+			</div>
+		</BrowserRouter>
+	</ApolloProvider>
+);
 
 ReactDOM.render(<Root />, document.querySelector('#root'));
