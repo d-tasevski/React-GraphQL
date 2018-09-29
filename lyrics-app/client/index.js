@@ -1,11 +1,11 @@
 import './style/style.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, HashRouter, Redirect } from 'react-router-dom';
+import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProvider } from 'react-apollo';
 
 import SongList from './components/SongList';
 import SongCreate from './components/SongCreate';
@@ -24,15 +24,16 @@ const client = new ApolloClient({
 
 const Root = () => (
 	<ApolloProvider client={client}>
-		<BrowserRouter>
+		<HashRouter>
 			<div className="container">
 				<Switch>
 					<Route exact path="/" component={SongList} />
 					<Route exact path="/songs/new" component={SongCreate} />
 					<Route path="/songs/:id" component={SongDetail} />
+					<Redirect to="/" />
 				</Switch>
 			</div>
-		</BrowserRouter>
+		</HashRouter>
 	</ApolloProvider>
 );
 
