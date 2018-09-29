@@ -4,6 +4,7 @@ const {
 	GraphQLInt,
 	GraphQLSchema,
 	GraphQLList,
+	GraphQLNonNull,
 } = require('graphql');
 const axios = require('axios');
 
@@ -71,15 +72,48 @@ const mutation = new GraphQLObjectType({
 		addUser: {
 			type: UserType,
 			args: {
+				firstName: { type: new GraphQLNonNull(GraphQLString) },
+				age: { type: new GraphQLNonNull(GraphQLInt) },
+				companyId: { type: GraphQLString },
+			},
+			async resolve(parentValue, { firstName, age }) {
+				const { data } = await axios.post('http://localhost:3000/users', {
+					firstName,
+					age,
+				});
+				return data;
+			},
+		},
+		deleteUser: {
+			type: UserType,
+			args: {
+				id: { type: new GraphQLNonNull(GraphQLString) },
+			},
+			async resolve(parentValue, { id }) {
+				const { data } = await axios.delete(`http://localhost:3000/users/${id}`);
+				return data;
+			},
+		},
+		editUser: {
+			type: UserType,
+			args: {
+				id: { type: new GraphQLNonNull(GraphQLString) },
 				firstName: { type: GraphQLString },
 				age: { type: GraphQLInt },
 				companyId: { type: GraphQLString },
 			},
-			resolve() {},
+			// json server will ignore id if it's passed to patch req, but nvm
+			async resolve(parentValue, { id, ...args }) {
+				const { data } = await axios.patch(`http://localhost:3000/users/${id}`, {
+					...args,
+				});
+				return data;
+			},
 		},
 	},
 });
 
 module.exports = new GraphQLSchema({
 	query: RootQuery,
+	mutation,
 });
