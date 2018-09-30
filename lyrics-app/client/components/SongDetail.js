@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
+import { RingLoader } from 'react-spinners';
+
 import fetchSong from '../queries/fetchSong';
 import LyricCreate from './LyricCreate';
 import LyricList from './LyricList';
@@ -9,7 +11,7 @@ class SongDetail extends Component {
 	render() {
 		const { song } = this.props.data;
 
-		if (!song) return <div>Loading...</div>;
+		if (!song) return <RingLoader size={100} />;
 
 		return (
 			<div>
